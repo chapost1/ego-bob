@@ -89,12 +89,14 @@ function getPlatesCombinationsOptions(gymPlatesOptions, targetWeight, maxDelta) 
         if (!plate.on) continue;
         let platesUsed = 0;
         let pairWeight = plate.weight * 2;
-        if (weight == targetWeight || weight == targetWeight + maxDelta) break;
-        if (pairWeight + weight <= targetWeight + maxDelta && platesUsed <= plate.max) {
-            weight += pairWeight;
-            platesUsed++;
-            plates.push(plate.weight);
-            plates.push(plate.weight);
+        for (let i = 0; i < plate.max; i++) {
+            if (weight == targetWeight || weight == targetWeight + maxDelta) break;
+            if (pairWeight + weight <= targetWeight + maxDelta && platesUsed <= plate.max) {
+                weight += pairWeight;
+                platesUsed++;
+                plates.push(plate.weight);
+                plates.push(plate.weight);
+            }
         }
     }
 
@@ -173,16 +175,19 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
     for (const barbell of gymUnit.BARBELLS_OPTIONS) {
         if (!barbell.on) continue;
         const platesCombos = new Set();
-        for (let delta = 0; delta <= maxDelta; delta += smallestPlateWeight) {
-            const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta);
-            const key = JSON.stringify(plateCombo.plates);
-            if (platesCombos.has(key)) continue;
-            platesCombos.add(key);
-            weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
+        for (const plate of gymPlatesOptions) {
+            for (let delta = 0; delta <= maxDelta; delta += smallestPlateWeight) {
+                const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta);
+                const key = JSON.stringify(plateCombo.plates);
+                if (platesCombos.has(key)) continue;
+                platesCombos.add(key);
+                weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
+            }
+            plate.on = false;
         }
     }
 
-    return sortWeightOptionsByDeltaAsc(weightOptions).slice(0, 4);
+    return sortWeightOptionsByDeltaAsc(weightOptions).filter(option => Math.abs(option.deltaInviewUnit) < maxDelta).slice(0, 10);
 }
 
 function sortWeightOptionsByDeltaAsc(weightOptions) {
@@ -283,8 +288,8 @@ function appendPlatesSuggestionResults(suggestions) {
                     </div>`;
         }
 
-        let platesData = 
-        `<div class="card-footer bg-dark-blue">
+        let platesData =
+            `<div class="card-footer bg-dark-blue">
             Plates On Each Side:
         </div>`;
         const plates = suggestion.plates.sort((a, b) => b.weight - a.weight);
@@ -299,7 +304,7 @@ function appendPlatesSuggestionResults(suggestions) {
         let deltaColor = "";
         if (suggestion.deltaInviewUnit < 0) {
             deltaColor = "text-danger";
-        } else if (suggestion.deltaInviewUnit > 0){
+        } else if (suggestion.deltaInviewUnit > 0) {
             deltaColor = "text-primary";
         }
 
