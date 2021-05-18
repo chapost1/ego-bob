@@ -107,7 +107,7 @@ function getPlatesCombinationsOptions(gymPlatesOptions, targetWeight, maxDelta) 
     }
 }
 
-function platesCombosToArr(plates) {
+function aggregatePlatesCombosIntoArray(plates) {
     const platesByType = new Map();
 
     const platesArr = [];
@@ -127,12 +127,8 @@ function platesCombosToArr(plates) {
     return platesArr;
 }
 
-function getMaxDelta() {
-    const maxDeltaInKg = 10;
-    if (state.viewUnit == BASES.POUND.NAME) {
-        return kgToPound(maxDeltaInKg);
-    }
-    return maxDeltaInKg;
+function getMaxDelta(targetWeight) {
+    return targetWeight * 0.075;
 }
 
 function toFixedNumber(num, fixed) {
@@ -155,45 +151,91 @@ function createWeightOption(barbell, plateCombo, targetBase, gymBase) {
     return {
         weight: toFixedNumber(totalWeight, 3),
         barbellWeight: toFixedNumber(barbellWeight, 3),
-        plates: platesCombosToArr(plateCombo.plates),
+        plates: aggregatePlatesCombosIntoArray(plateCombo.plates),
         deltaInviewUnit: toFixedNumber(delta, 3)
     }
 }
 
+function deepArrayPremitivesCopy(arr) {
+    return JSON.parse(JSON.stringify(arr));
+}
+
+function copyAllowedPlates(base) {
+    return deepArrayPremitivesCopy(base.PLATES_OPTIONS).filter(option => option.on);
+}
+
+function findSmallestWeight(options) {
+    return Math.min(...options.map(option => option.weight));
+}
+
+function filterTooHighDeltaSuggestions(options, maxDelta) {
+    return options.filter(option => Math.abs(option.deltaInviewUnit) < maxDelta);
+}
+
+function getBestSuggetions(weightOptions, maxDelta) {
+    return sortWeightOptionsByDeltaAsc(
+        filterTooHighDeltaSuggestions(weightOptions, maxDelta)
+    )
+        .slice(0, 26);
+}
+
+function getSelectedBarbell(gymUnitBase) {
+    for (const barbell of gymUnitBase.BARBELLS_OPTIONS) {
+        if (barbell.on) return barbell;
+    }
+}
+
 function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
-    const maxDelta = getMaxDelta();
+    const results = {suggestions: null, error: null};
     const viewUnit = getViewUnit();
     const gymUnit = getGymUnit();
     targetWeight = targetWeightViewUnitToGymUnit(targetWeight, viewUnit, gymUnit);
 
-    const gymPlatesOptions = sortWeightOptionsDesc(gymUnit.PLATES_OPTIONS.filter(option => option.on));
+    const barbell = getSelectedBarbell(gymUnit);
+    if (!barbell) {
+        results.error = Error("No Barbell Selected.");
+        return results;
+    }
+    if (targetWeight < barbell.weight) {
+        results.error = Error("Please select lighter barbell.");
+        return results;
+    }
+
+    const maxDelta = getMaxDelta(targetWeight);
 
     const weightOptions = [];
 
-    const smallestPlateWeight = Math.min(...gymPlatesOptions.map(option => option.weight));
+    const gymPlatesOptions = sortWeightOptionsDesc(copyAllowedPlates(gymUnit));
 
-    for (const barbell of gymUnit.BARBELLS_OPTIONS) {
-        if (!barbell.on) continue;
-        const platesCombos = new Set();
-        for (const plate of gymPlatesOptions) {
-            for (let delta = 0; delta <= maxDelta; delta += smallestPlateWeight) {
-                const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta);
-                const key = JSON.stringify(plateCombo.plates);
-                if (platesCombos.has(key)) continue;
-                platesCombos.add(key);
-                weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
-            }
-            plate.on = false;
+    const smallestPlateWeight = findSmallestWeight(gymPlatesOptions);
+
+    const platesCombos = new Set();
+    for (const plate of gymPlatesOptions) {
+        for (let delta = 0; delta <= maxDelta; delta += smallestPlateWeight) {
+            const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta);
+            const key = JSON.stringify(plateCombo.plates);
+            if (platesCombos.has(key)) continue;
+            platesCombos.add(key);
+            weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
         }
+        plate.on = false;
     }
 
-    return sortWeightOptionsByDeltaAsc(weightOptions).filter(option => Math.abs(option.deltaInviewUnit) < maxDelta).slice(0, 10);
+    results.suggestions = getBestSuggetions(weightOptions, maxDelta);
+
+    return results;
 }
 
 function sortWeightOptionsByDeltaAsc(weightOptions) {
     return weightOptions.sort(function (a, b) {
         return Math.abs(a.deltaInviewUnit) - Math.abs(b.deltaInviewUnit);
     });
+}
+
+function updateTargetWeightInputPlaceholder() {
+    const weightInput = document.getElementById("target-weight");
+    if (!weightInput) return;
+    weightInput.placeholder = `Target Weight (${getViewUnit().NAME})`;
 }
 
 function getTargetWeight() {
@@ -207,10 +249,12 @@ function getTargetWeight() {
 
 function calc() {
     const targetWeight = getTargetWeight();
-    if (!targetWeight) return showMessage("No target weight.");
-    const suggestions = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
+    if (!targetWeight) return notify("No target weight.");
 
-    appendPlatesSuggestionResults(suggestions);
+    const {suggestions, error} = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
+    if (error) return notify(error.message);
+
+    drawPlatesSuggestionResults(suggestions);
 }
 
 function convert(id) {
@@ -225,7 +269,7 @@ function convert(id) {
     }
 }
 
-function showMessage(message) {
+function notify(message) {
     const toastEl = $("#toast-id");
     const toastMessageBody = $("#toast-message");
     if (!toastEl || !toastMessageBody) return;
@@ -253,7 +297,7 @@ $(document).ready(function () {
         $(lastBarbellName).click();
     })();
 
-    function assignUnitSelect(unitProperty, calcType) {
+    function assignUnitSelect(unitProperty, calcType, next) {
         function viewUnitSelect(event) {
             state[unitProperty] = event.target.value.toUpperCase();
         }
@@ -266,10 +310,14 @@ $(document).ready(function () {
             }
         }
         $(firstUnitName).click();
+
+        if (next) next();
     }
 
     (function assignViewUnitSelect() {
-        assignUnitSelect("viewUnit", "target");
+        assignUnitSelect("viewUnit", "target", function () {
+            updateTargetWeightInputPlaceholder();
+        });
     })();
 
     (function assignGymUnitSelect() {
@@ -277,56 +325,62 @@ $(document).ready(function () {
     })();
 });
 
-function appendPlatesSuggestionResults(suggestions) {
-    const resultsDiv = document.getElementById("results");
-    if (!resultsDiv) return showMessage("internal error, please try again later");
-
-    const cardHTML = (suggestion, idx) => {
-        const createPlateListItem = (plate) => {
-            return `<div class="card-footer bg-light-blue">
-                        Weight: ${plate.weight} x ${plate.quantity / 2} <small>(${plate.quantity})</small>
-                    </div>`;
-        }
-
-        let platesData =
-            `<div class="card-footer bg-dark-blue">
-            Plates On Each Side:
-        </div>`;
-        const plates = suggestion.plates.sort((a, b) => b.weight - a.weight);
-        for (const plate of plates) {
-            platesData += createPlateListItem(plate);
-        }
-
-        if (plates.length < 1) {
-            platesData = `<div class="card-footer bg-light-blue">No Plates Needed</div>`;
-        }
-
-        let deltaColor = "";
-        if (suggestion.deltaInviewUnit < 0) {
-            deltaColor = "text-danger";
-        } else if (suggestion.deltaInviewUnit > 0) {
-            deltaColor = "text-primary";
-        }
-
-        return `<div class="card mx-auto my-2 shadow-sm" style="width: 18rem;">
-            <div class="card-body pb-1">
-                <h5 class="card-title">Option ${String.fromCharCode(idx + 65)}:</h5>
-                <h6 class="card-title mb-0">
-                    Total Weight: ${suggestion.weight}
-                </h6>
-                <small class="${deltaColor}">Delta: ${suggestion.deltaInviewUnit}</small>
-            </div>
-            <div class="card-footer bg-dark-c">
-                Barbell: ${suggestion.barbellWeight} ${getGymUnit().NAME}
-            </div>
-            ${platesData}
-        </div>`;
+function createSuggestionPlatesCardHTML(plates) {
+    const createPlateListItem = (plate) => {
+        return `<div class="card-footer bg-light-blue">
+                    Weight: ${plate.weight} x ${plate.quantity / 2} <small>(${plate.quantity})</small>
+                </div>`;
     }
+
+    let platesData =
+        `<div class="card-footer bg-dark-blue">
+        Plates On Each Side (${getGymUnit().NAME}):
+    </div>`;
+    const sortedPlates = plates.sort((a, b) => b.weight - a.weight);
+    for (const plate of sortedPlates) {
+        platesData += createPlateListItem(plate);
+    }
+
+    if (sortedPlates.length < 1) {
+        platesData = `<div class="card-footer bg-light-blue">No Plates Needed</div>`;
+    }
+
+    return platesData;
+}
+
+function createWeightSuggestionDeltaHTML(suggestion) {
+    let deltaColor = "";
+    if (suggestion.deltaInviewUnit < 0) {
+        deltaColor = "text-danger";
+    } else if (suggestion.deltaInviewUnit > 0) {
+        deltaColor = "text-primary";
+    }
+    return `<small class="${deltaColor}">Delta: ${suggestion.deltaInviewUnit}</small>`;
+}
+
+function createSuggestionCardHTML(suggestion, idx) {
+    return `<div class="card mx-auto my-2 shadow-sm" style="width: 18rem;">
+        <div class="card-body pb-1">
+            <h5 class="card-title">Option ${String.fromCharCode(idx + 65)}:</h5>
+            <h6 class="card-title mb-0">
+                Total Weight: ${suggestion.weight} ${getViewUnit().NAME}
+            </h6>
+            ${createWeightSuggestionDeltaHTML(suggestion)}
+        </div>
+        <div class="card-footer bg-dark-c">
+            Barbell: ${suggestion.barbellWeight} ${getViewUnit().NAME}
+        </div>
+        ${createSuggestionPlatesCardHTML(suggestion.plates)}
+    </div>`;
+}
+
+function drawPlatesSuggestionResults(suggestions) {
+    const resultsDiv = document.getElementById("results");
+    if (!resultsDiv) return notify("internal error, please try again later");
 
     let html = "";
     for (let i = 0; i < suggestions.length; i++) {
-        html += cardHTML(suggestions[i], i);
+        html += createSuggestionCardHTML(suggestions[i], i);
     }
     resultsDiv.innerHTML = html;
 }
-
