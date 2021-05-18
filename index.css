@@ -68,7 +68,12 @@ body {
   background-color: #e7f1ff !important;
 }
 
-.form-inline .form-group{
-  margin-left: 0;
-  margin-right: 0;
+.bg-dark-c {
+  background-color: #212529!important;
+  color: white;
+}
+
+.bg-dark-blue {
+  background-color: #3a5ec4!important;
+  color: white;
 }

@@ -101,7 +101,7 @@ function getPlatesCombinationsOptions(gymPlatesOptions, targetWeight, maxDelta) 
     return {
         plates: plates,
         weight: weight,
-        delta: Math.abs(weight - targetWeight)
+        delta: weight - targetWeight
     }
 }
 
@@ -187,7 +187,7 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
 
 function sortWeightOptionsByDeltaAsc(weightOptions) {
     return weightOptions.sort(function (a, b) {
-        return a.deltaInviewUnit - b.deltaInviewUnit;
+        return Math.abs(a.deltaInviewUnit) - Math.abs(b.deltaInviewUnit);
     });
 }
 
@@ -206,8 +206,6 @@ function calc() {
     const suggestions = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
 
     appendPlatesSuggestionResults(suggestions);
-
-    // todo: increase decrease weight by percentages
 }
 
 function convert(id) {
@@ -280,31 +278,43 @@ function appendPlatesSuggestionResults(suggestions) {
 
     const cardHTML = (suggestion, idx) => {
         const createPlateListItem = (plate) => {
-            return `<div class="card-footer">
-                        Weight: ${plate.weight} x ${plate.quantity}
+            return `<div class="card-footer bg-light-blue">
+                        Weight: ${plate.weight} x ${plate.quantity / 2} <small>(${plate.quantity})</small>
                     </div>`;
         }
 
-        let platesListItems = "";
-        const sortedPlates = suggestion.plates.sort((a, b) => b.weight - a.weight);
-        for (const plate of sortedPlates) {
-            platesListItems += createPlateListItem(plate);
+        let platesData = 
+        `<div class="card-footer bg-dark-blue">
+            Plates On Each Side:
+        </div>`;
+        const plates = suggestion.plates.sort((a, b) => b.weight - a.weight);
+        for (const plate of plates) {
+            platesData += createPlateListItem(plate);
+        }
+
+        if (plates.length < 1) {
+            platesData = `<div class="card-footer bg-light-blue">No Plates Needed</div>`;
+        }
+
+        let deltaColor = "";
+        if (suggestion.deltaInviewUnit < 0) {
+            deltaColor = "text-danger";
+        } else if (suggestion.deltaInviewUnit > 0){
+            deltaColor = "text-primary";
         }
 
         return `<div class="card mx-auto my-2 shadow-sm" style="width: 18rem;">
             <div class="card-body pb-1">
                 <h5 class="card-title">Option ${String.fromCharCode(idx + 65)}:</h5>
-                <h6 class="card-title">
+                <h6 class="card-title mb-0">
                     Total Weight: ${suggestion.weight}
                 </h6>
-                <h6 class="card-title">
-                    Delta: ${suggestion.deltaInviewUnit}
-                </h6>
+                <small class="${deltaColor}">Delta: ${suggestion.deltaInviewUnit}</small>
             </div>
-            <div class="card-footer bg-light-blue">
-                Plates:
+            <div class="card-footer bg-dark-c">
+                Barbell: ${suggestion.barbellWeight} ${getGymUnit().NAME}
             </div>
-            ${platesListItems}
+            ${platesData}
         </div>`;
     }
 
