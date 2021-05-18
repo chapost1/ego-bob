@@ -312,24 +312,6 @@ function appendPlatesSuggestionResults(suggestions) {
     for (let i = 0; i < suggestions.length; i++) {
         html += cardHTML(suggestions[i], i);
     }
-    // todo: print the plates desc order (object is ascending by default); 
-    // for( i--)!
     resultsDiv.innerHTML = html;
 }
 
-// function drawResults(results) {
-//     const cardHTML = (body) => {
-//         `<div class="card" style="width: 18rem;">
-//             <img src="..." class="card-img-top" alt="...">
-//             <div class="card-body">
-//                 <p class="card-text">${body}</p>
-//             </div>
-//         </div>`;
-//     }
-
-//     let html = "";
-
-//     for (const result of results) {
-//         html += cardHTML(result);
-//     }
-// }
