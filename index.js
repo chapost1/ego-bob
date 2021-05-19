@@ -147,18 +147,20 @@ function createWeightOption(barbell, plateCombo, targetBase, gymBase) {
     let totalWeight = barbell.weight + plateCombo.weight;
     let barbellWeight = barbell.weight;
     let delta = plateCombo.delta;
+    let deltaInviewUnit = delta;
 
     if (targetBase.NAME == BASES.KG.NAME && gymBase.NAME == BASES.POUND.NAME) {
         totalWeight = poundToKg(totalWeight);
         barbellWeight = poundToKg(barbellWeight);
-        delta = poundToKg(delta);
+        deltaInviewUnit = poundToKg(delta);
     }
 
     return {
         weight: toFixedNumber(totalWeight, 3),
         barbellWeight: toFixedNumber(barbellWeight, 3),
         plates: aggregatePlatesCombosIntoArray(plateCombo.plates),
-        deltaInviewUnit: toFixedNumber(delta, 3)
+        deltaInviewUnit: toFixedNumber(deltaInviewUnit, 3),
+        delta: toFixedNumber(delta, 3)
     }
 }
 
@@ -175,7 +177,7 @@ function findSmallestWeight(options) {
 }
 
 function filterTooHighDeltaSuggestions(options, maxDelta) {
-    return options.filter(option => Math.abs(option.deltaInviewUnit) <= maxDelta);
+    return options.filter(option => Math.abs(option.delta) <= maxDelta);
 }
 
 function getBestSuggetions(weightOptions, maxDelta) {
@@ -246,7 +248,7 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
 
 function sortWeightOptionsByDeltaAsc(weightOptions) {
     return weightOptions.sort(function (a, b) {
-        return Math.abs(a.deltaInviewUnit) - Math.abs(b.deltaInviewUnit);
+        return Math.abs(a.delta) - Math.abs(b.delta);
     });
 }
 
