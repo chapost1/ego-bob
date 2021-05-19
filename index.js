@@ -17,7 +17,7 @@ const KG_BARBELLS_OPTIONS = [
 
 const POUND_PLATES_OPTIONS = [
     { weight: 5, on: true, max: 6 },
-    { weight: 10, on: true, max: 4 },
+    { weight: 10, on: true, max: 12 },
     { weight: 20, on: true, max: 8 },
     { weight: 25, on: true, max: 8 },
     { weight: 35, on: true, max: 12 },
@@ -32,7 +32,7 @@ const POUND_BARBELLS_OPTIONS = KG_BARBELLS_OPTIONS.map(function (option) {
 const KG_PLATES_OPTIONS = [
     { weight: 1.25, on: true, max: 6 },
     { weight: 2.5, on: true, max: 4 },
-    { weight: 5, on: true, max: 8 },
+    { weight: 5, on: true, max: 12 },
     { weight: 10, on: true, max: 8 },
     { weight: 15, on: true, max: 12 },
     { weight: 20, on: true, max: 10 },
@@ -280,7 +280,6 @@ function notify(message) {
 $(document).ready(function () {
     (function assignBarbellSelect() {
         function barbellSelect(event) {
-            debugger;
             for (let i = 0; i < BASES.KG.BARBELLS_OPTIONS.length; i++) {
                 BASES.KG.BARBELLS_OPTIONS[i].on = false;
                 BASES.POUND.BARBELLS_OPTIONS[i].on = false;
@@ -361,9 +360,10 @@ function createWeightSuggestionDeltaHTML(suggestion) {
 }
 
 function createSuggestionCardHTML(suggestion, idx) {
+    const selectButton = `<button class="pull-right btn btn-secondary shadow-sm btn-sm">Select</button>`;
     return `<div class="card mx-auto my-2 shadow-sm" style="width: 18rem;">
         <div class="card-body pb-1">
-            <h5 class="card-title">Option ${String.fromCharCode(idx + 65)}:</h5>
+            <h5 class="card-title">Option ${String.fromCharCode(idx + 65)}: ${selectButton}</h5>
             <h6 class="card-title mb-0">
                 Total Weight: ${suggestion.weight} ${getViewUnit().NAME}
             </h6>
@@ -377,7 +377,7 @@ function createSuggestionCardHTML(suggestion, idx) {
 }
 
 function drawPlatesSuggestionResults(suggestions) {
-    const resultsDiv = document.getElementById("results");
+    const resultsDiv = document.getElementById("target-weight-results");
     if (!resultsDiv) return notify("internal error, please try again later");
 
     let html = "";

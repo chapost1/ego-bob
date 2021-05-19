@@ -77,3 +77,7 @@ body {
   background-color: #3a5ec4!important;
   color: white;
 }
+
+.pull-right {
+  float: right;
+}
