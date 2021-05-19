@@ -1,5 +1,7 @@
 const KG_TO_POUND = 2.204622621847;
 
+const MAX_DELTA_RATIO = 0.05;
+
 function kgToPound(kg) {
     return kg * KG_TO_POUND;
 }
@@ -54,6 +56,7 @@ const BASES = {
 const state = {
     viewUnit: BASES.KG.NAME,
     gymPlatesUnit: BASES.KG.NAME,
+    allowPlatesCalcDelta: true,
     targetWeight: null,
     plateLoadSuggestions: [],
     selectedSuggestionId: null,
@@ -131,7 +134,7 @@ function aggregatePlatesCombosIntoArray(plates) {
 }
 
 function getMaxDelta(targetWeight) {
-    return targetWeight * 0.075;
+    return targetWeight * MAX_DELTA_RATIO;
 }
 
 function toFixedNumber(num, fixed) {
@@ -172,10 +175,13 @@ function findSmallestWeight(options) {
 }
 
 function filterTooHighDeltaSuggestions(options, maxDelta) {
-    return options.filter(option => Math.abs(option.deltaInviewUnit) < maxDelta);
+    return options.filter(option => Math.abs(option.deltaInviewUnit) <= maxDelta);
 }
 
 function getBestSuggetions(weightOptions, maxDelta) {
+    if (!state.allowPlatesCalcDelta) {
+        maxDelta = 0;
+    }
     return sortWeightOptionsByDeltaAsc(
         filterTooHighDeltaSuggestions(weightOptions, maxDelta)
     )
@@ -217,13 +223,18 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
             plate.on = true;
         }
         for (const plate of gymPlatesOptions) {
-            for (let deltaSign = -1; deltaSign <= 1; deltaSign += 2) {
-                const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta * deltaSign);
-                const comboKey = JSON.stringify(plateCombo.plates);
-                if (platesCombos.has(comboKey)) continue;
-                platesCombos.add(comboKey);
-                weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
+            plateMax = plate.max;
+            for (let i = plate.max; i > 0; i /= 2) {
+                for (let deltaSign = -1; deltaSign <= 1; deltaSign += 2) {
+                    const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta * deltaSign);
+                    const comboKey = JSON.stringify(plateCombo.plates);
+                    if (platesCombos.has(comboKey)) continue;
+                    platesCombos.add(comboKey);
+                    weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
+                }
+                plate.max = i;
             }
+            plate.max = plateMax;
             plate.on = false;
         }
     }
@@ -264,6 +275,10 @@ function calc() {
     state.targetWeight = targetWeight;
 
     state.plateLoadSuggestions = suggestions;
+
+    if (state.plateLoadSuggestions.length == 0) {
+        notify("No suggestions");
+    }
 
     drawPlatesSuggestionResults();
 }
@@ -334,6 +349,16 @@ $(document).ready(function () {
 
     (function assignGymUnitSelect() {
         assignUnitSelect("gymPlatesUnit", "gym");
+    })();
+
+    (function assignAllowPlatesCalcDeltaOnChange() {
+        function allowDeltaOnChange(event) {
+            state.allowPlatesCalcDelta = event.target.checked;
+        }
+        const checkbox = $("#allow-plates-calc-delta");
+        checkbox.on('change', allowDeltaOnChange);
+        checkbox.click();
+        checkbox.next("label").html(`Allow Delta (${MAX_DELTA_RATIO * 100}%)`);
     })();
 });
 
