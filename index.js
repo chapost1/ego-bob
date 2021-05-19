@@ -16,7 +16,7 @@ const KG_BARBELLS_OPTIONS = [
 ];
 
 const POUND_PLATES_OPTIONS = [
-    { weight: 5, on: true, max: 6 },
+    { weight: 5, on: true, max: 10 },
     { weight: 10, on: true, max: 12 },
     { weight: 20, on: true, max: 8 },
     { weight: 25, on: true, max: 8 },
@@ -30,8 +30,8 @@ const POUND_BARBELLS_OPTIONS = KG_BARBELLS_OPTIONS.map(function (option) {
 );
 
 const KG_PLATES_OPTIONS = [
-    { weight: 1.25, on: true, max: 6 },
-    { weight: 2.5, on: true, max: 4 },
+    { weight: 1.25, on: true, max: 8 },
+    { weight: 2.5, on: true, max: 6 },
     { weight: 5, on: true, max: 12 },
     { weight: 10, on: true, max: 8 },
     { weight: 15, on: true, max: 12 },
@@ -212,8 +212,11 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
     const smallestPlateWeight = findSmallestWeight(gymPlatesOptions);
 
     const platesCombos = new Set();
-    for (const plate of gymPlatesOptions) {
-        for (let delta = 0; delta <= maxDelta; delta += smallestPlateWeight) {
+    for (let delta = 0; delta <= maxDelta; delta += smallestPlateWeight) {
+        for (const plate of gymPlatesOptions) {
+            plate.on = true;
+        }
+        for (const plate of gymPlatesOptions) {
             for (let deltaSign = -1; deltaSign <= 1; deltaSign += 2) {
                 const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta * deltaSign);
                 const comboKey = JSON.stringify(plateCombo.plates);
@@ -221,8 +224,8 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
                 platesCombos.add(comboKey);
                 weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
             }
+            plate.on = false;
         }
-        plate.on = false;
     }
 
     results.suggestions = getBestSuggetions(weightOptions, maxDelta);
@@ -417,7 +420,7 @@ function selectPlatesLoadSuggestion(idx) {
 
     const continueContainer = document.getElementById("continue-with-plates-suggestion-container");
     if (!continueContainer) return notify("internal error, please try again later");
-    
+
     const suggestionHeaderText = document.getElementById("continue-with-plates-suggestion-header-text");
     if (!suggestionHeaderText) return notify("internal error, please try again later");
     suggestionHeaderText.innerHTML = "Option " + numberToUpperCaseLetter(idx);
