@@ -53,7 +53,11 @@ const BASES = {
 
 const state = {
     viewUnit: BASES.KG.NAME,
-    gymPlatesUnit: BASES.KG.NAME
+    gymPlatesUnit: BASES.KG.NAME,
+    targetWeight: null,
+    plateLoadSuggestions: [],
+    selectedSuggestionId: null,
+    selectedSuggestion: null
 };
 
 const BASE_BY_NAME = {
@@ -155,12 +159,12 @@ function createWeightOption(barbell, plateCombo, targetBase, gymBase) {
     }
 }
 
-function deepArrayPremitivesCopy(arr) {
-    return JSON.parse(JSON.stringify(arr));
+function deepObjectPremitivesCopy(object) {
+    return JSON.parse(JSON.stringify(object));
 }
 
 function copyAllowedPlates(base) {
-    return deepArrayPremitivesCopy(base.PLATES_OPTIONS).filter(option => option.on);
+    return deepObjectPremitivesCopy(base.PLATES_OPTIONS).filter(option => option.on);
 }
 
 function findSmallestWeight(options) {
@@ -254,7 +258,11 @@ function calc() {
     const { suggestions, error } = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
     if (error) return notify(error.message);
 
-    drawPlatesSuggestionResults(suggestions);
+    state.targetWeight = targetWeight;
+
+    state.plateLoadSuggestions = suggestions;
+
+    drawPlatesSuggestionResults();
 }
 
 function convert(id) {
@@ -359,11 +367,18 @@ function createWeightSuggestionDeltaHTML(suggestion) {
     return `<small class="${deltaColor}">Delta: ${suggestion.deltaInviewUnit} ${getViewUnit().NAME}</small>`;
 }
 
-function createSuggestionCardHTML(suggestion, idx) {
-    const selectButton = `<button class="pull-right btn btn-secondary shadow-sm btn-sm" onclick="selectPlatesLoadSuggestion()">Select</button>`;
+function createSuggestionCardHTML(suggestion, idx, select = false, title) {
+    let selectButton = "";
+    if (select) {
+        selectButton = `<button class="pull-right btn btn-secondary shadow-sm btn-sm" onclick="selectPlatesLoadSuggestion(${idx})">Select</button>`;
+    }
+    let cardTitle = `Option ${numberToUpperCaseLetter(idx)}: ${selectButton}`;
+    if (title) {
+        cardTitle = title;
+    }
     return `<div class="card mx-auto my-2 shadow-sm" style="width: 18rem;">
         <div class="card-body pb-1">
-            <h5 class="card-title">Option ${String.fromCharCode(idx + 65)}: ${selectButton}</h5>
+            <h5 class="card-title">${cardTitle}</h5>
             <h6 class="card-title mb-0">
                 Total Weight: ${suggestion.weight} ${getViewUnit().NAME}
             </h6>
@@ -376,19 +391,43 @@ function createSuggestionCardHTML(suggestion, idx) {
     </div>`;
 }
 
-function drawPlatesSuggestionResults(suggestions) {
+function drawPlatesSuggestionResults() {
+    const suggestions = state.plateLoadSuggestions;
     const resultsDiv = document.getElementById("target-weight-results");
     if (!resultsDiv) return notify("internal error, please try again later");
 
     let html = "";
     for (let i = 0; i < suggestions.length; i++) {
-        html += createSuggestionCardHTML(suggestions[i], i);
+        html += createSuggestionCardHTML(suggestions[i], i, true);
     }
     resultsDiv.innerHTML = html;
 }
 
-function selectPlatesLoadSuggestion() {
+function selectPlatesLoadSuggestion(idx) {
+    if (!idx && idx != 0) {
+        return notify("internal error, please try again later");
+    }
+    idx = Number(idx);
+    const selectedSuggestion = deepObjectPremitivesCopy(state.plateLoadSuggestions[idx]);
+    if (!selectedSuggestion) {
+        return notify("internal error, please try again later");
+    }
+    state.selectedSuggestionId = Number(idx);
+    state.selectedSuggestion = selectedSuggestion;
+
+    const continueContainer = document.getElementById("continue-with-plates-suggestion-container");
+    if (!continueContainer) return notify("internal error, please try again later");
+    
+    const suggestionHeaderText = document.getElementById("continue-with-plates-suggestion-header-text");
+    if (!suggestionHeaderText) return notify("internal error, please try again later");
+    suggestionHeaderText.innerHTML = "Option " + numberToUpperCaseLetter(idx);
+
+    const continueSuggestionBase = document.getElementById("continue-with-plates-suggestion-base-container");
+    if (!continueSuggestionBase) return notify("internal error, please try again later");
+    continueSuggestionBase.innerHTML = createSuggestionCardHTML(selectedSuggestion, idx, false, "Target Set Base Plate Load");
+
     // draw and etc
+
     openSelectedPlatesLoadSuggestion();
 }
 
@@ -400,4 +439,8 @@ function openSelectedPlatesLoadSuggestion() {
 function closeSelectedPlatesLoadSuggestion() {
     $("#plates-calc-suggestions-container").show();
     $("#continue-with-plates-suggestion-container").hide();
+}
+
+function numberToUpperCaseLetter(number) {
+    return String.fromCharCode(number + 65);
 }
