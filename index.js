@@ -397,7 +397,7 @@ function createWeightSuggestionDeltaHTML(suggestion) {
 }
 
 function createSuggestionCardHTML(suggestion, idx, select = false, title) {
-    // select = false; //todo- delete when feature is ready
+    select = false; //todo- delete when feature is ready
     let selectButton = "";
     if (select) {
         selectButton = `<button class="pull-right btn btn-secondary shadow-sm btn-sm" onclick="selectPlatesLoadSuggestion(${idx})">Select</button>`;
