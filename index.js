@@ -54,6 +54,7 @@ const BASES = {
 const state = {
     viewUnit: BASES.KG.NAME,
     gymPlatesUnit: BASES.KG.NAME,
+    allowPlatesCalcDelta: true,
     targetWeight: null,
     plateLoadSuggestions: [],
     selectedSuggestionId: null,
@@ -172,10 +173,13 @@ function findSmallestWeight(options) {
 }
 
 function filterTooHighDeltaSuggestions(options, maxDelta) {
-    return options.filter(option => Math.abs(option.deltaInviewUnit) < maxDelta);
+    return options.filter(option => Math.abs(option.deltaInviewUnit) <= maxDelta);
 }
 
 function getBestSuggetions(weightOptions, maxDelta) {
+    if (!state.allowPlatesCalcDelta) {
+        maxDelta = 0;
+    }
     return sortWeightOptionsByDeltaAsc(
         filterTooHighDeltaSuggestions(weightOptions, maxDelta)
     )
@@ -265,6 +269,10 @@ function calc() {
 
     state.plateLoadSuggestions = suggestions;
 
+    if (state.plateLoadSuggestions.length == 0) {
+        notify("No suggestions");
+    }
+
     drawPlatesSuggestionResults();
 }
 
@@ -334,6 +342,15 @@ $(document).ready(function () {
 
     (function assignGymUnitSelect() {
         assignUnitSelect("gymPlatesUnit", "gym");
+    })();
+
+    (function assignAllowPlatesCalcDeltaOnChange() {
+        function allowDeltaOnChange(event) {
+            state.allowPlatesCalcDelta = event.target.checked;
+        }
+        const checkbox = $("#allow-plates-calc-delta");
+        checkbox.on('change', allowDeltaOnChange);
+        checkbox.click();
     })();
 });
 
