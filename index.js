@@ -1,5 +1,7 @@
 const KG_TO_POUND = 2.204622621847;
 
+const MAX_DELTA_RATIO = 0.05;
+
 function kgToPound(kg) {
     return kg * KG_TO_POUND;
 }
@@ -132,7 +134,7 @@ function aggregatePlatesCombosIntoArray(plates) {
 }
 
 function getMaxDelta(targetWeight) {
-    return targetWeight * 0.075;
+    return targetWeight * MAX_DELTA_RATIO;
 }
 
 function toFixedNumber(num, fixed) {
@@ -221,13 +223,18 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
             plate.on = true;
         }
         for (const plate of gymPlatesOptions) {
-            for (let deltaSign = -1; deltaSign <= 1; deltaSign += 2) {
-                const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta * deltaSign);
-                const comboKey = JSON.stringify(plateCombo.plates);
-                if (platesCombos.has(comboKey)) continue;
-                platesCombos.add(comboKey);
-                weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
+            plateMax = plate.max;
+            for (let i = plate.max; i > 0; i /= 2) {
+                for (let deltaSign = -1; deltaSign <= 1; deltaSign += 2) {
+                    const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta * deltaSign);
+                    const comboKey = JSON.stringify(plateCombo.plates);
+                    if (platesCombos.has(comboKey)) continue;
+                    platesCombos.add(comboKey);
+                    weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
+                }
+                plate.max = i;
             }
+            plate.max = plateMax;
             plate.on = false;
         }
     }
@@ -351,6 +358,7 @@ $(document).ready(function () {
         const checkbox = $("#allow-plates-calc-delta");
         checkbox.on('change', allowDeltaOnChange);
         checkbox.click();
+        checkbox.next("label").html(`Allow Delta (${MAX_DELTA_RATIO * 100}%)`);
     })();
 });
 
