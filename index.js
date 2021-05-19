@@ -360,7 +360,7 @@ function createWeightSuggestionDeltaHTML(suggestion) {
 }
 
 function createSuggestionCardHTML(suggestion, idx) {
-    const selectButton = `<button class="pull-right btn btn-secondary shadow-sm btn-sm">Select</button>`;
+    const selectButton = `<button class="pull-right btn btn-secondary shadow-sm btn-sm" onclick="selectPlatesLoadSuggestion()">Select</button>`;
     return `<div class="card mx-auto my-2 shadow-sm" style="width: 18rem;">
         <div class="card-body pb-1">
             <h5 class="card-title">Option ${String.fromCharCode(idx + 65)}: ${selectButton}</h5>
@@ -385,4 +385,19 @@ function drawPlatesSuggestionResults(suggestions) {
         html += createSuggestionCardHTML(suggestions[i], i);
     }
     resultsDiv.innerHTML = html;
+}
+
+function selectPlatesLoadSuggestion() {
+    // draw and etc
+    openSelectedPlatesLoadSuggestion();
+}
+
+function openSelectedPlatesLoadSuggestion() {
+    $("#continue-with-plates-suggestion-container").show();
+    $("#plates-calc-suggestions-container").hide();
+}
+
+function closeSelectedPlatesLoadSuggestion() {
+    $("#plates-calc-suggestions-container").show();
+    $("#continue-with-plates-suggestion-container").hide();
 }
