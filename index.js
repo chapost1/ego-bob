@@ -226,7 +226,7 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
         }
         for (const plate of gymPlatesOptions) {
             plateMax = plate.max;
-            for (let i = plate.max; i > 0; i /= 2) {
+            for (; plate.max >= 2; plate.max -= 2) {
                 for (let deltaSign = -1; deltaSign <= 1; deltaSign += 2) {
                     const plateCombo = getPlatesCombinationsOptions(gymPlatesOptions, targetWeight - barbell.weight, delta * deltaSign);
                     const comboKey = JSON.stringify(plateCombo.plates);
@@ -234,7 +234,6 @@ function calcGymPlatesSuggestionsByTargetWeight(targetWeight) {
                     platesCombos.add(comboKey);
                     weightOptions.push(createWeightOption(barbell, plateCombo, viewUnit, gymUnit));
                 }
-                plate.max = i;
             }
             plate.max = plateMax;
             plate.on = false;
@@ -398,7 +397,7 @@ function createWeightSuggestionDeltaHTML(suggestion) {
 }
 
 function createSuggestionCardHTML(suggestion, idx, select = false, title) {
-    select = false; //todo- delete when feature is ready
+    // select = false; //todo- delete when feature is ready
     let selectButton = "";
     if (select) {
         selectButton = `<button class="pull-right btn btn-secondary shadow-sm btn-sm" onclick="selectPlatesLoadSuggestion(${idx})">Select</button>`;
