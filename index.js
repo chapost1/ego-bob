@@ -484,6 +484,7 @@ function numberToUpperCaseLetter(number) {
  * because the user actually has to lift and change plates, it's not very convinient.
  * so that's why heavier plates equals more.
  * the suggestion with the highest scores (least weight and heavy plates changes is the winner).
+ * targetWeight is in view unit
  */
 function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevSuggestion, nextSuggestion) {
     const result = { suggestion: null, error: null };
@@ -496,7 +497,6 @@ function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevS
     if (suggestions.length < 1) return result;
 
     const suggestionsScores = [];
-
     const prevSuggestionPlates = !prevSuggestion ? [] : prevSuggestion.plates;
     const nextSuggestionPlates = !nextSuggestion ? [] : nextSuggestion.plates;
     const platesByType = new Map();
@@ -522,19 +522,14 @@ function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevS
 
         let score = 100;
 
-        const reduceWhenInconvient = plates => {
-            for (let platePower = 0; platePower < plates.length; platePower++) {
-                const plate = plates[platePower];
-                let quantity = 0;
-                if (suggestionPlatesByType.has(plate.weight)) {
-                    quantity = suggestionPlatesByType.get(plate.weight);
-                }
-                score -= Math.abs(plate.quantity - quantity) * (platePower + 1);
+        for (let platePower = 0; platePower < platesArr.length; platePower++) {
+            const plate = platesArr[platePower];
+            let quantity = 0;
+            if (suggestionPlatesByType.has(plate.weight)) {
+                quantity = suggestionPlatesByType.get(plate.weight);
             }
+            score -= Math.abs(plate.quantity - quantity) * (platePower + 1);
         }
-
-        reduceWhenInconvient(prevSuggestionPlates);
-        reduceWhenInconvient(nextSuggestionPlates);
 
         suggestionsScores.push({ idx: i, score: score });
     }
