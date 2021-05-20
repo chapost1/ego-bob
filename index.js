@@ -477,6 +477,10 @@ function numberToUpperCaseLetter(number) {
     return String.fromCharCode(number + 65);
 }
 
+function sortPlatesArrayASC(plates) {
+    plates.sort((a, b) => a.weight - b.weight);
+}
+
 /** The Idea behid this algorithm is to look at the plates of the prev set and next set 
  * each plate has power which is related to it's weight. the heavier it gets it equal more scores.
  * each time we find a difference between a suggestion to the prev and next (quantity of plate)
@@ -486,7 +490,7 @@ function numberToUpperCaseLetter(number) {
  * the suggestion with the highest scores (least weight and heavy plates changes is the winner).
  * targetWeight is in view unit
  */
-function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevSuggestion, nextSuggestion) {
+function findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight, prevSuggestion, nextSuggestion) {
     const result = { suggestion: null, error: null };
     const { suggestions, error } = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
     if (error) {
@@ -497,10 +501,10 @@ function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevS
     if (suggestions.length < 1) return result;
 
     const suggestionsScores = [];
-    const prevSuggestionPlates = !prevSuggestion ? [] : prevSuggestion.plates;
-    const nextSuggestionPlates = !nextSuggestion ? [] : nextSuggestion.plates;
+    const prevSuggestionPlates = deepObjectPremitivesCopy(Boolean(prevSuggestion) ? prevSuggestion.plates : []);
+    const nextSuggestionPlates = deepObjectPremitivesCopy(Boolean(nextSuggestion) ? nextSuggestion.plates : []);
     const platesByType = new Map();
-    const platesArr = [];
+    const platesArrASC = [];
     for (const plate of prevSuggestionPlates.concat(nextSuggestionPlates)) {
         if (platesByType.has(plate.weight)) {
             platesByType.set(plate.weight, platesByType.get(plate.weight) + plate.quantity / 2);
@@ -509,9 +513,9 @@ function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevS
         }
     }
     platesByType.forEach((quantity, weight) => {
-        platesArr.push({ weight: weight, quantity: quantity });
+        platesArrASC.push({ weight: weight, quantity: quantity });
     });
-    platesArr.sort((a, b) => a.weight - b.weight);
+    sortPlatesArrayASC(platesArrASC);
 
     for (let i = 0; i < suggestions.length; i++) {
         const suggestion = suggestions[i];
@@ -519,17 +523,24 @@ function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevS
         for (const plate of suggestion.plates) {
             suggestionPlatesByType.set(plate.weight, plate.quantity / 2);
         }
+        const sortedSuggestionPlatesASC = sortPlatesArrayASC(deepObjectPremitivesCopy(suggestion.plates));
 
         let score = 100;
 
-        for (let platePower = 0; platePower < platesArr.length; platePower++) {
-            const plate = platesArr[platePower];
-            let quantity = 0;
-            if (suggestionPlatesByType.has(plate.weight)) {
-                quantity = suggestionPlatesByType.get(plate.weight);
+        const reduceScoreWhenHasPlatesToChange = (ascendingPlates, platesQuantityByType, dominantSuggetionRatio) => {
+            for (let platePower = 0; platePower < ascendingPlates.length; platePower++) {
+                const plate = ascendingPlates[platePower];
+                let quantity = 0;
+                if (platesQuantityByType.has(plate.weight)) {
+                    quantity = platesQuantityByType.get(plate.weight);
+                }
+                score -= Math.abs(plate.quantity - quantity) * (platePower + 1) * dominantSuggetionRatio;
             }
-            score -= Math.abs(plate.quantity - quantity) * (platePower + 1);
         }
+        // 1 ratio because the plates are matter are important to make the right choice.
+        reduceScoreWhenHasPlatesToChange(platesArrASC, suggestionPlatesByType, 1);
+        // 0.5 ratio because the suggesion is lease important but yet we do not want to change much plates and do take care of it.
+        reduceScoreWhenHasPlatesToChange(sortedSuggestionPlatesASC, platesByType, 0.5);
 
         suggestionsScores.push({ idx: i, score: score });
     }
