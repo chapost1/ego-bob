@@ -60,7 +60,8 @@ const state = {
     targetWeight: null,
     plateLoadSuggestions: [],
     selectedSuggestionId: null,
-    selectedSuggestion: null
+    selectedSuggestion: null,
+    userCalc: false,
 };
 
 const BASE_BY_NAME = {
@@ -181,7 +182,7 @@ function filterTooHighDeltaSuggestions(options, maxDelta) {
 }
 
 function getBestSuggetions(weightOptions, maxDelta) {
-    if (!state.allowPlatesCalcDelta) {
+    if (!state.allowPlatesCalcDelta && state.userCalc) {
         maxDelta = 0;
     }
     return sortWeightOptionsByDeltaAsc(
@@ -270,7 +271,9 @@ function calc() {
     const targetWeight = getTargetWeight();
     if (!targetWeight) return notify("No target weight.");
 
+    state.userCalc = true;
     const { suggestions, error } = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
+    state.userCalc = false;
     if (error) return notify(error.message);
 
     state.targetWeight = targetWeight;
@@ -472,4 +475,78 @@ function closeSelectedPlatesLoadSuggestion() {
 
 function numberToUpperCaseLetter(number) {
     return String.fromCharCode(number + 65);
+}
+
+/** The Idea behid this algorithm is to look at the plates of the prev set and next set 
+ * each plate has power which is related to it's weight. the heavier it gets it equal more scores.
+ * each time we find a difference between a suggestion to the prev and next (quantity of plate)
+ * it downgrade the scores which is 100 at start.
+ * because the user actually has to lift and change plates, it's not very convinient.
+ * so that's why heavier plates equals more.
+ * the suggestion with the highest scores (least weight and heavy plates changes is the winner).
+ */
+function findMostConvientSuggestionInBetweenGivenSuggestions(targetWeight, prevSuggestion, nextSuggestion) {
+    const result = { suggestion: null, error: null };
+    const { suggestions, error } = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
+    if (error) {
+        result.error = error;
+        return result;
+    }
+
+    if (suggestions.length < 1) return result;
+
+    const suggestionsScores = [];
+
+    const prevSuggestionPlates = !prevSuggestion ? [] : prevSuggestion.plates;
+    const nextSuggestionPlates = !nextSuggestion ? [] : nextSuggestion.plates;
+    const platesByType = new Map();
+    const platesArr = [];
+    for (const plate of prevSuggestionPlates.concat(nextSuggestionPlates)) {
+        if (platesByType.has(plate.weight)) {
+            platesByType.set(plate.weight, platesByType.get(plate.weight) + plate.quantity / 2);
+        } else {
+            platesByType.set(plate.weight, plate.quantity / 2);
+        }
+    }
+    platesByType.forEach((quantity, weight) => {
+        platesArr.push({ weight: weight, quantity: quantity });
+    });
+    platesArr.sort((a, b) => a.weight - b.weight);
+
+    for (let i = 0; i < suggestions.length; i++) {
+        const suggestion = suggestions[i];
+        const suggestionPlatesByType = new Map();
+        for (const plate of suggestion.plates) {
+            suggestionPlatesByType.set(plate.weight, plate.quantity / 2);
+        }
+
+        let score = 100;
+
+        const reduceWhenInconvient = plates => {
+            for (let platePower = 0; platePower < plates.length; platePower++) {
+                const plate = plates[platePower];
+                let quantity = 0;
+                if (suggestionPlatesByType.has(plate.weight)) {
+                    quantity = suggestionPlatesByType.get(plate.weight);
+                }
+                score -= Math.abs(plate.quantity - quantity) * (platePower + 1);
+            }
+        }
+
+        reduceWhenInconvient(prevSuggestionPlates);
+        reduceWhenInconvient(nextSuggestionPlates);
+
+        suggestionsScores.push({ idx: i, score: score });
+    }
+
+    if (suggestionsScores.length < 1) return result;
+
+    let highestScore = suggestionsScores[0];
+    result.suggestion = suggestions[0];
+    for (let i = 1; i < suggestionsScores.length; i++) {
+        if (suggestionsScores[i].score > highestScore) {
+            result.suggestion = suggestions[i];
+        }
+    }
+    return result;
 }
