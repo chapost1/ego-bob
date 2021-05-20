@@ -283,7 +283,7 @@ function calc() {
     if (state.plateLoadSuggestions.length == 0) {
         notify("No suggestions");
     }
-
+    
     drawPlatesSuggestionResults();
 }
 
@@ -478,7 +478,7 @@ function numberToUpperCaseLetter(number) {
 }
 
 function sortPlatesArrayASC(plates) {
-    plates.sort((a, b) => a.weight - b.weight);
+    return plates.sort((a, b) => a.weight - b.weight);
 }
 
 /** The Idea behid this algorithm is to look at the plates of the prev set and next set 
@@ -490,7 +490,7 @@ function sortPlatesArrayASC(plates) {
  * the suggestion with the highest scores (least weight and heavy plates changes is the winner).
  * targetWeight is in view unit
  */
-function findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight, prevSuggestion, nextSuggestion) {
+function findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight, prevSuggestion, nextSuggestion, ascendingSets) {
     const result = { suggestion: null, error: null };
     const { suggestions, error } = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
     if (error) {
@@ -524,8 +524,12 @@ function findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(target
             suggestionPlatesByType.set(plate.weight, plate.quantity / 2);
         }
         const sortedSuggestionPlatesASC = sortPlatesArrayASC(deepObjectPremitivesCopy(suggestion.plates));
+        const sortedSuggestionPlates = sortedSuggestionPlatesASC;
+        if (ascendingSets) {// we would want as much of heavier plates when it's ascending sets routine and lighter when desc set
+            sortedSuggestionPlates.reverse();// the reason is if that's ascending we would want as much of heavier plates instead of lighter ones
+        }
 
-        let score = 100;
+        let score = 1000;
 
         const reduceScoreWhenHasPlatesToChange = (ascendingPlates, platesQuantityByType, dominantSuggetionRatio) => {
             for (let platePower = 0; platePower < ascendingPlates.length; platePower++) {
@@ -534,13 +538,13 @@ function findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(target
                 if (platesQuantityByType.has(plate.weight)) {
                     quantity = platesQuantityByType.get(plate.weight);
                 }
-                score -= Math.abs(plate.quantity - quantity) * (platePower + 1) * dominantSuggetionRatio;
+                score -= Math.abs(plate.quantity - quantity) * platesQuantityByType.size * (platePower + 1) * dominantSuggetionRatio;
             }
         }
         // 1 ratio because the plates are matter are important to make the right choice.
         reduceScoreWhenHasPlatesToChange(platesArrASC, suggestionPlatesByType, 1);
         // 0.5 ratio because the suggesion is lease important but yet we do not want to change much plates and do take care of it.
-        reduceScoreWhenHasPlatesToChange(sortedSuggestionPlatesASC, platesByType, 0.5);
+        reduceScoreWhenHasPlatesToChange(sortedSuggestionPlates, platesByType, 0.5);
 
         suggestionsScores.push({ idx: i, score: score });
     }
