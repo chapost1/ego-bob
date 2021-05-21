@@ -324,17 +324,15 @@ $(document).ready(function () {
                 }
             }
         }
-        let lastBarbellName;
-        let configOnBarbellName;
+        const selectEl = $("#settings-barbell-select");
+        let selectOptions = "<option>Select a Barbell</option>";
+
         for (const barbell of BASES.KG.BARBELLS_OPTIONS) {
-            lastBarbellName = '#barbell-weight-' + barbell.weight;
-            lastBarbellName = lastBarbellName.replace(/\./g, '-');
-            $(lastBarbellName).on('change', barbellSelect);
-            if (barbell.on) {
-                configOnBarbellName = lastBarbellName;
-            }
+            const selected = barbell.on ? "selected" : "";
+            selectOptions += `<option value="${barbell.weight}" ${selected}>${barbell.weight}</option>`;
         }
-        $(configOnBarbellName || lastBarbellName).click();
+        selectEl.html(selectOptions);
+        selectEl.on("change", barbellSelect);
     })();
 
     function assignUnitSelect(unitProperty, calcType, next) {
