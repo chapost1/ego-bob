@@ -113,3 +113,9 @@ body {
 .allow-plates-calc-delta-settings-container {
   padding-left: 1.25rem!important;
 }
+
+@media only screen and (max-width: 576px) {
+  #plates-calc-suggestions-container .settings-barbell-select .form-check-inline {
+    margin-right: 0.6em;
+  }
+}

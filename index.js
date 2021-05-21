@@ -11,10 +11,11 @@ function poundToKg(pound) {
 }
 
 const KG_BARBELLS_OPTIONS = [
-    { weight: 10, on: true },
-    { weight: 15, on: true },
-    { weight: 17.5, on: true },
+    { weight: 10, on: false },
+    { weight: 15, on: false },
+    { weight: 17.5, on: false },
     { weight: 20, on: true },
+    { weight: 23.5, on: false },
 ];
 
 const POUND_PLATES_OPTIONS = [
@@ -27,7 +28,7 @@ const POUND_PLATES_OPTIONS = [
 ];
 
 const POUND_BARBELLS_OPTIONS = KG_BARBELLS_OPTIONS.map(function (option) {
-    return { weight: kgToPound(option.weight), on: true }
+    return { weight: kgToPound(option.weight), on: option.on }
 }
 );
 
@@ -324,12 +325,16 @@ $(document).ready(function () {
             }
         }
         let lastBarbellName;
+        let configOnBarbellName;
         for (const barbell of BASES.KG.BARBELLS_OPTIONS) {
             lastBarbellName = '#barbell-weight-' + barbell.weight;
             lastBarbellName = lastBarbellName.replace(/\./g, '-');
             $(lastBarbellName).on('change', barbellSelect);
+            if (barbell.on) {
+                configOnBarbellName = lastBarbellName;
+            }
         }
-        $(lastBarbellName).click();
+        $(configOnBarbellName || lastBarbellName).click();
     })();
 
     function assignUnitSelect(unitProperty, calcType, next) {
