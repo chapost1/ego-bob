@@ -288,7 +288,7 @@ function calc() {
     if (state.plateLoadSuggestions.length == 0) {
         notify("No suggestions");
     }
-    
+
     drawPlatesSuggestionResults();
 }
 
@@ -576,13 +576,13 @@ function testFindLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions() 
     const { suggestions, error } = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
     if (error) return notify(error.message);
 
-    const {suggestion: suggestionA} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.3, null, suggestions[0], true);
+    const { suggestion: suggestionA } = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.3, null, suggestions[0], true);
     console.log(JSON.stringify(suggestionA.plates));
     console.log(JSON.stringify(suggestions[0].plates));
-    const {suggestion: suggestionB} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.9, null, suggestions[0], false);
+    const { suggestion: suggestionB } = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.9, null, suggestions[0], false);
     console.log(JSON.stringify(suggestionB.plates));
-    const {suggestion: suggestionC} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.75, suggestionB, suggestions[0], false);
+    const { suggestion: suggestionC } = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.75, suggestionB, suggestions[0], false);
     console.log(JSON.stringify(suggestionC.plates));
-    const {suggestion: suggestionD} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.5, suggestionC, suggestions[0], false);
+    const { suggestion: suggestionD } = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.5, suggestionC, suggestions[0], false);
     console.log(JSON.stringify(suggestionD.plates));
 }
