@@ -325,8 +325,7 @@ $(document).ready(function () {
             }
         }
         const selectEl = $("#settings-barbell-select");
-        let selectOptions = "<option>Select Weight</option>";
-
+        let selectOptions = "";
         for (const barbell of BASES.KG.BARBELLS_OPTIONS) {
             const selected = barbell.on ? "selected" : "";
             selectOptions += `<option value="${barbell.weight}" ${selected}>${barbell.weight}</option>`;
