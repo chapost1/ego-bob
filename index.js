@@ -368,7 +368,7 @@ $(document).ready(function () {
         const checkbox = $("#allow-plates-calc-delta");
         checkbox.on('change', allowDeltaOnChange);
         checkbox.click();
-        checkbox.next("label").html(`Allow Delta (~${MAX_DELTA_RATIO * 100}%)&nbsp;<small class="text-sm-end fw-light text-danger">*Recommended</small>`);
+        checkbox.next("label").html(`Allow Delta <small>(~${MAX_DELTA_RATIO * 100}%)</small>&nbsp;<small class="text-sm-end fw-light text-danger">*Recommended</small>`);
     })();
 });
 
