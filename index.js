@@ -135,7 +135,13 @@ function aggregatePlatesCombosIntoArray(plates) {
 }
 
 function getMaxDelta(targetWeight) {
-    return targetWeight * MAX_DELTA_RATIO;
+    let deltaRatio = MAX_DELTA_RATIO;
+    const viewUnitName = getViewUnit().NAME;// we want the delta to increase just a bit in light weights of pounds
+    if (viewUnitName == BASES.KG.NAME && viewUnitName != getGymUnit().NAME) {// because the plates are kinda heavy and we will miss out obvious suggestions
+        const smallestPlateWeight = findSmallestWeight(getGymUnit().PLATES_OPTIONS);// when the view is kg and the target is pound if we stay on small delta
+        deltaRatio *= smallestPlateWeight / 2 / (targetWeight * 0.01);// the delta ratio decrease in heavier weights to prevent allowing too heavy delta when weight is heavy
+    }
+    return targetWeight * deltaRatio;
 }
 
 function toFixedNumber(num, fixed) {
@@ -283,6 +289,18 @@ function calc() {
     if (state.plateLoadSuggestions.length == 0) {
         notify("No suggestions");
     }
+
+    // for asc sets tests
+    // const {suggestion: suggestionA} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.3, null, suggestions[0], true);
+    // debugger;
+    // console.log(JSON.stringify(suggestionA.plates));
+    // console.log(JSON.stringify(suggestions[0].plates));
+    // const {suggestion: suggestionB} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.9, null, suggestions[0], false);
+    // console.log(JSON.stringify(suggestionB.plates));
+    // const {suggestion: suggestionC} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.75, suggestionB, suggestions[0], false);
+    // console.log(JSON.stringify(suggestionC.plates));
+    // const {suggestion: suggestionD} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.5, suggestionC, suggestions[0], false);
+    // console.log(JSON.stringify(suggestionD.plates));
     
     drawPlatesSuggestionResults();
 }
