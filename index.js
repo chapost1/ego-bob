@@ -159,6 +159,10 @@ function createWeightOption(barbell, plateCombo, targetBase, gymBase) {
         totalWeight = poundToKg(totalWeight);
         barbellWeight = poundToKg(barbellWeight);
         deltaInviewUnit = poundToKg(delta);
+    } else if (targetBase.NAME == BASES.POUND.NAME && gymBase.NAME == BASES.KG.NAME) {
+        totalWeight = kgToPound(totalWeight);
+        barbellWeight = kgToPound(barbellWeight);
+        deltaInviewUnit = kgToPound(delta);
     }
 
     return {
@@ -337,6 +341,7 @@ $(document).ready(function () {
     function assignUnitSelect(unitProperty, calcType, next) {
         function viewUnitSelect(event) {
             state[unitProperty] = event.target.value;
+            if (next) next();
         }
         let firstUnitName, lastUnitName;
         for (const unit in BASES) {
@@ -347,8 +352,6 @@ $(document).ready(function () {
             }
         }
         $(firstUnitName).click();
-
-        if (next) next();
     }
 
     (function assignViewUnitSelect() {
