@@ -373,6 +373,13 @@ $(document).ready(function () {
         checkbox.click();
         checkbox.next("label").html(`Allow Delta <small>(~${MAX_DELTA_RATIO * 100}%)</small>&nbsp;<small class="text-sm-end fw-light text-danger">*Recommended</small>`);
     })();
+
+    (function initConvertionInputValues(){
+        $("#kg-to-pound").val(1);
+        convert("kg-to-pound");
+        $("#pound-to-kg").val(1);
+        convert("pound-to-kg");
+    })();
 });
 
 function createSuggestionPlatesCardHTML(plates) {
@@ -418,7 +425,7 @@ function createSuggestionCardHTML(suggestion, idx, select = false, title) {
     if (title) {
         cardTitle = title;
     }
-    return `<div class="card mx-auto my-2 shadow-sm" style="width: 18rem;">
+    return `<div class="card mx-auto my-2 mb-3 shadow-sm" style="width: 18rem;">
         <div class="card-body pb-1">
             <h5 class="card-title">${cardTitle}</h5>
             <h6 class="card-title mb-0">
