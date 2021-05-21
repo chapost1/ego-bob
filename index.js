@@ -44,12 +44,12 @@ const BASES = {
     KG: {
         NAME: "KG",
         PLATES_OPTIONS: KG_PLATES_OPTIONS,
-        BARBELLS_OPTIONS: KG_BARBELLS_OPTIONS
+        BARBELLS_OPTIONS: KG_BARBELLS_OPTIONS,
     },
     POUND: {
         NAME: "POUND",
         PLATES_OPTIONS: POUND_PLATES_OPTIONS,
-        BARBELLS_OPTIONS: POUND_BARBELLS_OPTIONS
+        BARBELLS_OPTIONS: POUND_BARBELLS_OPTIONS,
     }
 }
 
@@ -135,12 +135,10 @@ function aggregatePlatesCombosIntoArray(plates) {
 }
 
 function getMaxDelta(targetWeight) {
-    let deltaRatio = MAX_DELTA_RATIO;
-    const viewUnitName = getViewUnit().NAME;// we want the delta to increase just a bit in light weights of pounds
-    if (viewUnitName == BASES.KG.NAME && viewUnitName != getGymUnit().NAME) {// because the plates are kinda heavy and we will miss out obvious suggestions
-        const smallestPlateWeight = findSmallestWeight(getGymUnit().PLATES_OPTIONS);// when the view is kg and the target is pound if we stay on small delta
-        deltaRatio *= smallestPlateWeight / 2 / (targetWeight * 0.01);// the delta ratio decrease in heavier weights to prevent allowing too heavy delta when weight is heavy
-    }
+    // we want a higher delta as long as the weight is smaller and vice versa
+    // because we won't find all the small suggestions with light weights otherwise
+    const smallestPlateWeight = findSmallestWeight(getGymUnit().PLATES_OPTIONS);
+    const deltaRatio = MAX_DELTA_RATIO * smallestPlateWeight / 2 / (targetWeight * 0.01);
     return targetWeight * deltaRatio;
 }
 
@@ -289,18 +287,6 @@ function calc() {
     if (state.plateLoadSuggestions.length == 0) {
         notify("No suggestions");
     }
-
-    // for asc sets tests
-    // const {suggestion: suggestionA} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.3, null, suggestions[0], true);
-    // debugger;
-    // console.log(JSON.stringify(suggestionA.plates));
-    // console.log(JSON.stringify(suggestions[0].plates));
-    // const {suggestion: suggestionB} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.9, null, suggestions[0], false);
-    // console.log(JSON.stringify(suggestionB.plates));
-    // const {suggestion: suggestionC} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.75, suggestionB, suggestions[0], false);
-    // console.log(JSON.stringify(suggestionC.plates));
-    // const {suggestion: suggestionD} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.5, suggestionC, suggestions[0], false);
-    // console.log(JSON.stringify(suggestionD.plates));
     
     drawPlatesSuggestionResults();
 }
@@ -380,14 +366,14 @@ $(document).ready(function () {
         const checkbox = $("#allow-plates-calc-delta");
         checkbox.on('change', allowDeltaOnChange);
         checkbox.click();
-        checkbox.next("label").html(`Allow Delta (${MAX_DELTA_RATIO * 100}%)`);
+        checkbox.next("label").html(`Allow Delta (~${MAX_DELTA_RATIO * 100}%)&nbsp;<small class="text-sm-end fw-light text-danger">*Recommended</small>`);
     })();
 });
 
 function createSuggestionPlatesCardHTML(plates) {
     const createPlateListItem = (plate) => {
         return `<div class="card-footer bg-light-blue">
-                    Weight: ${plate.weight} x ${plate.quantity / 2} <small>(${plate.quantity})</small>
+                    Weight: ${plate.weight} x ${plate.quantity / 2} <small class="pull-right">(${plate.quantity})</small>
                 </div>`;
     }
 
@@ -577,4 +563,20 @@ function findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(target
         }
     }
     return result;
+}
+
+function testFindLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions() {
+    const targetWeight = 100;
+    const { suggestions, error } = calcGymPlatesSuggestionsByTargetWeight(targetWeight);
+    if (error) return notify(error.message);
+
+    const {suggestion: suggestionA} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.3, null, suggestions[0], true);
+    console.log(JSON.stringify(suggestionA.plates));
+    console.log(JSON.stringify(suggestions[0].plates));
+    const {suggestion: suggestionB} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.9, null, suggestions[0], false);
+    console.log(JSON.stringify(suggestionB.plates));
+    const {suggestion: suggestionC} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.75, suggestionB, suggestions[0], false);
+    console.log(JSON.stringify(suggestionC.plates));
+    const {suggestion: suggestionD} = findLeastExhaustingTargetWeightSuggestionBetweenGivenSuggestions(targetWeight * 0.5, suggestionC, suggestions[0], false);
+    console.log(JSON.stringify(suggestionD.plates));
 }
