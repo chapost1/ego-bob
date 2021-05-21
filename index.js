@@ -325,7 +325,7 @@ $(document).ready(function () {
             }
         }
         const selectEl = $("#settings-barbell-select");
-        let selectOptions = "<option>Select a Barbell</option>";
+        let selectOptions = "<option>Select Weight</option>";
 
         for (const barbell of BASES.KG.BARBELLS_OPTIONS) {
             const selected = barbell.on ? "selected" : "";
@@ -337,7 +337,7 @@ $(document).ready(function () {
 
     function assignUnitSelect(unitProperty, calcType, next) {
         function viewUnitSelect(event) {
-            state[unitProperty] = event.target.value.toUpperCase();
+            state[unitProperty] = event.target.value;
         }
         let firstUnitName, lastUnitName;
         for (const unit in BASES) {
