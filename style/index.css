@@ -121,3 +121,10 @@ body {
   left: 50%;
   transform: translateX(-25%);
 }
+
+.horizontal-aligned-badge {
+  position: absolute !important;
+  right: 5px;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}

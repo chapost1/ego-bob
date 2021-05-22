@@ -124,9 +124,9 @@
                       </div>
 
                       <div class="row px-2 py-1">
-                        <button type="button" class="btn btn-sm shadow-sm btn-secondary" data-bs-toggle="modal"
+                        <button type="button" class="btn btn-sm shadow-sm btn-secondary position-relative" data-bs-toggle="modal"
                           data-bs-target="#workout-wizard-plates-settings-modal">
-                          Gym Plates
+                          Gym Plates <span id="workout-wizard-panel-gym-plates-unit-badge" class="badge bg-dark horizontal-aligned-badge"></span>
                         </button>
                       </div>
 
@@ -137,7 +137,8 @@
                   <div class="py-2">
 
                     <div class="input-group mb-3 shadow-sm">
-                      <span id="workout-wizard-panel-plates-calc-target-weight-pre-text" class="input-group-text"></span>
+                      <span id="workout-wizard-panel-plates-calc-target-weight-pre-text"
+                        class="input-group-text"></span>
                       <input id="workout-wizard-panel-plates-calc-target-weight" type="number"
                         class="form-control col-5" placeholder="Target Weight"
                         aria-label="workout-wizard-panel-plates-calc-target-weight"
