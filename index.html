@@ -98,7 +98,7 @@
                       </div>
 
                       <div class="row px-2 py-1">
-                        <label class="px-0">Select Your View Unit:</label>
+                        <label class="px-0">Choose View Unit:</label>
                         <div class="form-check form-check-inline col-3">
                           <input class="form-check-input" type="radio"
                             name="workout-wizard-panel-settings-view-unit-select"
@@ -115,24 +115,6 @@
                         </div>
                       </div>
 
-                      <div class="row px-2 py-1">
-                        <label class="px-0">Select Gym Plates Unit:</label>
-                        <div class="form-check form-check-inline col-3">
-                          <input class="form-check-input" type="radio"
-                            name="workout-wizard-panel-settings-gym-unit-select"
-                            id="workout-wizard-panel-settings-gym-unit-select-kg" value="KG">
-                          <label class="form-check-label"
-                            for="workout-wizard-panel-settings-gym-unit-select-kg">KG</label>
-                        </div>
-                        <div class="form-check form-check-inline col-3">
-                          <input class="form-check-input" type="radio"
-                            name="workout-wizard-panel-settings-gym-unit-select"
-                            id="workout-wizard-panel-settings-gym-unit-select-pound" value="POUND">
-                          <label class="form-check-label"
-                            for="workout-wizard-panel-settings-gym-unit-select-pound">POUND</label>
-                        </div>
-                      </div>
-
                       <div id="workout-wizard-panel-settings-allow-calc-delta-container" class="form-check pt-1">
                         <input class="form-check-input" type="checkbox" value=""
                           id="workout-wizard-panel-settings-allow-calc-delta">
@@ -141,18 +123,27 @@
                         </label>
                       </div>
 
+                      <div class="row px-2 py-1">
+                        <button type="button" class="btn btn-sm shadow-sm btn-secondary" data-bs-toggle="modal"
+                          data-bs-target="#workout-wizard-plates-settings-modal">
+                          Gym Plates Settings
+                        </button>
+                      </div>
+
                     </div>
+
                   </div>
 
                   <div class="py-2">
 
                     <div class="input-group mb-3 shadow-sm">
+                      <span id="workout-wizard-panel-plates-calc-target-weight-pre-text" class="input-group-text"></span>
                       <input id="workout-wizard-panel-plates-calc-target-weight" type="number"
                         class="form-control col-5" placeholder="Target Weight"
                         aria-label="workout-wizard-panel-plates-calc-target-weight"
                         aria-describedby="workout-wizard-panel-plates-calc-target-weight-btn">
                       <div class="input-group-append">
-                        <span class="btn btn-primary input-group-text"
+                        <span class="btn-primary input-group-text"
                           id="workout-wizard-panel-plates-calc-target-weight-btn"
                           onclick="calcUserTargetWeightPlatesLoadOptions()">Calc</span>
                       </div>
@@ -170,8 +161,8 @@
 
               <div id="ww-plate-load-selected-option-panel-container" class="card workout-wizard-step-panel">
                 <h5 class="card-header shadow-sm"><i class="bi bi-arrow-left clickable"
-                    onclick="closeSelectedPlatesLoadOption()"></i> <span
-                    id="ww-plate-load-selected-option-panel-header" class="mx-2">Option A</span></h5>
+                    onclick="closeSelectedPlatesLoadOption()"></i> <span id="ww-plate-load-selected-option-panel-header"
+                    class="mx-2">Option A</span></h5>
                 <div class="card-body">
                   <div id="ww-plate-load-selected-option-based-option-container">
                   </div>
@@ -199,6 +190,49 @@
           </div>
         </div>
 
+
+        <!-- Workout Wizard Settings Plates Modal -->
+        <div class="modal fade" id="workout-wizard-plates-settings-modal" tabindex="-1"
+          aria-labelledby="workout-wizard-plates-settings-modal-label" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="workout-wizard-plates-settings-modal-label">Select Available Plates
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <ul class="nav nav-tabs" id="workout-wizard-plates-settings-modal-tab" role="tablist">
+
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="workout-wizard-plates-settings-modal-kg-tab"
+                      data-bs-toggle="tab" data-bs-target="#workout-wizard-plates-settings-modal-kg-tab-content"
+                      type="button" role="tab" aria-controls="workout-wizard-plates-settings-modal-kg-tab-content"
+                      aria-selected="true">KG</button>
+                  </li>
+
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="workout-wizard-plates-settings-modal-pound-tab" data-bs-toggle="tab"
+                      data-bs-target="#workout-wizard-plates-settings-modal-pound-tab-content" type="button" role="tab"
+                      aria-controls="workout-wizard-plates-settings-modal-pound-tab-content"
+                      aria-selected="false">POUND</button>
+                  </li>
+
+                </ul>
+                <div class="tab-content mt-2" id="workout-wizard-plates-settings-modal-content">
+                  <div class="tab-pane fade show active" id="workout-wizard-plates-settings-modal-kg-tab-content"
+                    role="tabpanel" aria-labelledby="workout-wizard-plates-settings-modal-kg-tab">
+                  </div>
+
+                  <div class="tab-pane fade" id="workout-wizard-plates-settings-modal-pound-tab-content" role="tabpanel"
+                    aria-labelledby="workout-wizard-plates-settings-modal-pound-tab">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -210,8 +244,9 @@
   </div>
 
   <script src="./lib/utilFunctions.js"></script>
-  <script src="./lib/initialConfig.js"></script>
+  <script src="./lib/baseConfig.js"></script>
   <script src="./lib/index.js"></script>
+  <script src="./lib/init.js"></script>
 
 </body>
 
