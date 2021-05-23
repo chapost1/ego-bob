@@ -211,7 +211,3 @@ form-switch sizes
   width: calc(4rem + 0.75rem);
   border-radius: 5rem;
 }
-
-#workout-wizard-plates-settings-modal .modal-content {
-  overflow: scroll;
-}
