@@ -42,18 +42,18 @@
             <div class="accordion-body">
 
               <div class="mb-3 input-group">
-                <input id="kg-to-pound" type="number" placeholder="0" class="from-control col-3" pattern="\d*" />
+                <input id="kg-to-pound" type="number" placeholder="0" class="from-control col-3" pattern="\d*" inputmode="decimal"/>
                 <input type="button" class="btn btn-sm btn-primary" value="Kg To Pound"
                   onclick="convertWeightUnit('kg-to-pound')">
-                <input id="kg-to-pound-result" type="number" pattern="\d*" readonly disabled placeholder="0"
+                <input id="kg-to-pound-result" type="number" readonly disabled placeholder="0"
                   class="from-control col-3" />
               </div>
 
               <div class="mb-3 input-group">
-                <input id="pound-to-kg" type="number" pattern="\d*" placeholder="0" class="from-control col-3" />
+                <input id="pound-to-kg" type="number" pattern="\d*" placeholder="0" class="from-control col-3" inputmode="decimal"/>
                 <input type="button" class="btn btn-sm btn-primary" value="Pound to Kg"
                   onclick="convertWeightUnit('pound-to-kg')">
-                <input id="pound-to-kg-result" type="number" pattern="\d*" readonly disabled placeholder="0"
+                <input id="pound-to-kg-result" type="number" readonly disabled placeholder="0"
                   class="from-control col-3" />
               </div>
 
