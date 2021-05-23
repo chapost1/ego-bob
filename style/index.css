@@ -18,6 +18,10 @@ body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+input[type="radio"], input[type="checkbox"] {
+  cursor: pointer;
+}
+
 .clickable {
   cursor: pointer;
 }

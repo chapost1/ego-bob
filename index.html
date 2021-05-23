@@ -42,7 +42,8 @@
             <div class="accordion-body">
 
               <div class="mb-3 input-group">
-                <input id="kg-to-pound" type="number" placeholder="0" class="from-control col-3" pattern="\d*" inputmode="decimal"/>
+                <input id="kg-to-pound" type="number" placeholder="0" class="from-control col-3" pattern="\d*"
+                  inputmode="decimal" />
                 <input type="button" class="btn btn-sm btn-primary" value="Kg To Pound"
                   onclick="convertWeightUnit('kg-to-pound')">
                 <input id="kg-to-pound-result" type="number" readonly disabled placeholder="0"
@@ -50,7 +51,8 @@
               </div>
 
               <div class="mb-3 input-group">
-                <input id="pound-to-kg" type="number" pattern="\d*" placeholder="0" class="from-control col-3" inputmode="decimal"/>
+                <input id="pound-to-kg" type="number" pattern="\d*" placeholder="0" class="from-control col-3"
+                  inputmode="decimal" />
                 <input type="button" class="btn btn-sm btn-primary" value="Pound to Kg"
                   onclick="convertWeightUnit('pound-to-kg')">
                 <input id="pound-to-kg-result" type="number" readonly disabled placeholder="0"
@@ -88,7 +90,7 @@
                     <div class="card card-body">
 
                       <div class="row form-floating px-2 py-1">
-                        <select class="shadow-sm form-select"
+                        <select class="shadow-sm form-select clickable"
                           id="workout-wizard-panel-settings-barbell-select"></select>
                         <label for="workout-wizard-panel-settings-barbell-select">Selected Barbell Weight (KG)</label>
                       </div>
@@ -141,7 +143,7 @@
                         aria-label="workout-wizard-panel-plates-calc-target-weight"
                         aria-describedby="workout-wizard-panel-plates-calc-target-weight-btn">
                       <div class="input-group-append">
-                        <span class="btn-primary input-group-text"
+                        <span class="btn-primary input-group-text clickable"
                           id="workout-wizard-panel-plates-calc-target-weight-btn"
                           onclick="calcUserTargetWeightPlatesLoadOptions()">Calc</span>
                       </div>
