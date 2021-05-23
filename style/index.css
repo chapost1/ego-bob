@@ -144,11 +144,11 @@ body {
 #ww-plate-load-selected-option-panel-container {
   display: none;
 }
-
+/* 
 #workout-wizard-plates-settings-modal-content {
-  max-height: calc(75vh - 200px);
+  max-height: calc(75vh - 120px);
   overflow: scroll;
-}
+} */
 
 #workout-wizard-panel-settings-allow-calc-delta-container {
   padding-left: 1.25rem!important;
