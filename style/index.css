@@ -1,3 +1,8 @@
+html {
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   background-color: #eeeeee !important;
 }
@@ -147,11 +152,6 @@ body {
 
 #workout-wizard-panel-settings-allow-calc-delta-container {
   padding-left: 1.25rem!important;
-}
-
-#workout-wizard-plates-settings-modal-content {
-  position: relative;
-  z-index: 100;
 }
 
 #workout-wizard-plates-settings-modal-content thead, tr:not(:last-of-type) {
