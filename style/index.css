@@ -18,12 +18,13 @@ body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
-input[type="radio"], input[type="checkbox"] {
-  cursor: pointer;
-}
-
-.clickable {
-  cursor: pointer;
+@media only screen and (max-width: 576px) {
+  input[type="radio"], input[type="checkbox"] {
+    cursor: pointer;
+  }
+  .clickable {
+    cursor: pointer;
+  }
 }
 
 .clickable:hover {
