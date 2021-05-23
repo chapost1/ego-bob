@@ -145,6 +145,11 @@ body {
   display: none;
 }
 
+#workout-wizard-plates-settings-modal-content {
+  max-height: calc(75vh);
+  overflow: scroll;
+}
+
 #workout-wizard-panel-settings-allow-calc-delta-container {
   padding-left: 1.25rem!important;
 }
@@ -210,9 +215,4 @@ form-switch sizes
   height: 2.5rem;
   width: calc(4rem + 0.75rem);
   border-radius: 5rem;
-}
-
-#workout-wizard-plates-settings-modal .modal-content {
-  max-height: calc(75vh);
-  overflow: scroll;
 }
