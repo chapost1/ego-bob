@@ -213,6 +213,5 @@ form-switch sizes
 }
 
 #workout-wizard-plates-settings-modal .modal-content {
-  max-height: 80vh;
   overflow: scroll;
 }
