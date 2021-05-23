@@ -146,7 +146,7 @@ body {
 }
 
 #workout-wizard-plates-settings-modal-content {
-  max-height: calc(75vh);
+  max-height: calc(75vh - 100px);
   overflow: scroll;
 }
 
