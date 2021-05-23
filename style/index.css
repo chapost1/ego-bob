@@ -149,6 +149,11 @@ body {
   padding-left: 1.25rem!important;
 }
 
+#workout-wizard-plates-settings-modal-content {
+  position: relative;
+  z-index: 100;
+}
+
 #workout-wizard-plates-settings-modal-content thead, tr:not(:last-of-type) {
   border-bottom: 1px solid #dee2e6;
 }
