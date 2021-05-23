@@ -149,10 +149,6 @@ body {
   padding-left: 1.25rem!important;
 }
 
-/* #workout-wizard-plates-settings-modal-kg-tab-content {
-  padding-bottom: 2 * env(safe-area-inset-bottom);
-} */
-
 #workout-wizard-plates-settings-modal-content thead, tr:not(:last-of-type) {
   border-bottom: 1px solid #dee2e6;
 }
@@ -217,5 +213,6 @@ form-switch sizes
 }
 
 #workout-wizard-plates-settings-modal .modal-content {
+  max-height: calc(75vh);
   overflow: scroll;
 }
