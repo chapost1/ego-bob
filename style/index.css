@@ -30,6 +30,10 @@ body {
   }
 }
 
+.fs-md {
+  font-size: 1rem;
+}
+
 input[type="radio"], input[type="checkbox"] {
   cursor: pointer;
 }
