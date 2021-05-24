@@ -24,6 +24,12 @@ body {
   }
 }
 
+@media screen and (max-width: 639px) {
+  .fs-sm {
+    font-size: .75rem;
+  }
+}
+
 input[type="radio"], input[type="checkbox"] {
   cursor: pointer;
 }

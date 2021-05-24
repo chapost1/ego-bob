@@ -39,24 +39,28 @@
           </h2>
           <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
             aria-labelledby="panelsStayOpen-headingOne">
-            <div class="accordion-body">
+            <div class="accordion-body" id="units-calculator-section">
 
-              <div class="mb-3 input-group">
-                <input id="kg-to-pound" type="number" placeholder="0" class="from-control col-3" pattern="\d*"
-                  inputmode="decimal" />
-                <input type="button" class="btn btn-sm btn-primary" value="Kg To Pound"
-                  onclick="convertWeightUnit('kg-to-pound')">
-                <input id="kg-to-pound-result" type="number" readonly disabled placeholder="0"
-                  class="from-control col-3" />
+              <div class="input-group mb-2 shadow-sm">
+                <span class="input-group-text">KG TO POUND</span>
+                <input id="kg-to-pound" type="number" pattern="\d*" inputmode="decimal" class="form-control col-5"
+                  placeholder="0" aria-label="kg-to-pound" aria-describedby="kg-to-pound">
+                <input type="button" class="shadow-sm btn btn-sm btn-primary" value="Convert"
+                  onclick="convertWeightUnit('kg-to-pound')" />
+                <input id="kg-to-pound-result" type="number" pattern="\d*" inputmode="decimal"
+                  class="form-control col-5" placeholder="0" aria-label="kg-to-pound-result"
+                  aria-describedby="kg-to-pound-result">
               </div>
 
-              <div class="mb-3 input-group">
-                <input id="pound-to-kg" type="number" pattern="\d*" placeholder="0" class="from-control col-3"
-                  inputmode="decimal" />
-                <input type="button" class="btn btn-sm btn-primary" value="Pound to Kg"
-                  onclick="convertWeightUnit('pound-to-kg')">
-                <input id="pound-to-kg-result" type="number" readonly disabled placeholder="0"
-                  class="from-control col-3" />
+              <div class="input-group shadow-sm">
+                <span class="input-group-text">POUND TO KG</span>
+                <input id="pound-to-kg" type="number" pattern="\d*" inputmode="decimal" class="form-control col-5"
+                  placeholder="0" aria-label="pound-to-kg" aria-describedby="pound-to-kg">
+                <input type="button" class="shadow-sm btn btn-sm btn-primary" value="Convert"
+                  onclick="convertWeightUnit('pound-to-kg')" />
+                <input id="pound-to-kg-result" type="number" pattern="\d*" inputmode="decimal"
+                  class="form-control col-5" placeholder="0" aria-label="pound-to-kg-result"
+                  aria-describedby="kpound-to-kg-result">
               </div>
 
             </div>
@@ -79,14 +83,14 @@
 
                 <h5 class="card-header shadow-sm"><span>Plates Load</span></h5>
                 <div class="card-body">
-                  <p class="mb-2">
+                  <div class="mb-2">
                     <button class="btn btn-sm btn-secondary shadow-sm" type="button" data-bs-toggle="collapse"
                       data-bs-target="#workout-wizard-panel-settings" aria-expanded="false"
                       aria-controls="workout-wizard-panel-settings">
                       Settings
                     </button>
-                  </p>
-                  <div class="collapse" id="workout-wizard-panel-settings">
+                  </div>
+                  <div class="collapse mb-2" id="workout-wizard-panel-settings">
                     <div class="card card-body">
 
                       <div class="row form-floating px-2 py-1">
@@ -133,24 +137,23 @@
 
                   </div>
 
-                  <div class="py-2">
+                  <div>
 
-                    <div class="input-group mb-3 shadow-sm">
+                    <div class="input-group mb-2">
                       <span id="workout-wizard-panel-plates-calc-target-weight-pre-text"
-                        class="input-group-text"></span>
+                        class="input-group-text shadow-sm"></span>
                       <input id="workout-wizard-panel-plates-calc-target-weight" type="number" pattern="\d*" min="0"
-                        inputmode="decimal" class="form-control col-5" placeholder="Target Weight"
+                        inputmode="decimal" class="form-control col-5 shadow-sm" placeholder="Target Weight"
                         aria-label="workout-wizard-panel-plates-calc-target-weight"
                         aria-describedby="workout-wizard-panel-plates-calc-target-weight-btn">
-                      <div class="input-group-append">
-                        <span class="btn-primary input-group-text clickable"
-                          id="workout-wizard-panel-plates-calc-target-weight-btn"
-                          onclick="calcUserTargetWeightPlatesLoadOptions()">Calc</span>
-                      </div>
+                      <input type="button" class="btn btn-primary shadow-sm" value="Calc"
+                        id="workout-wizard-panel-plates-calc-target-weight-btn"
+                        onclick="calcUserTargetWeightPlatesLoadOptions()" />
                     </div>
 
                     <div id="workout-wizard-panel-plates-calc-target-weight-results" class="row flex-column">
-
+                      <div class="text-center text-muted fs-sm">Enter Target Weight And Press Calc To Display
+                        Combinations</div>
                     </div>
 
                   </div>
