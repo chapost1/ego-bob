@@ -41,23 +41,23 @@
             aria-labelledby="panelsStayOpen-headingOne">
             <div class="accordion-body" id="units-calculator-section">
 
-              <div class="input-group mb-2 shadow-sm">
-                <span class="input-group-text">KG-POUND</span>
+              <div class="input-group input-group-sm mb-2 shadow-sm">
+                <span class="input-group-text">KG TO POUND</span>
                 <input id="kg-to-pound" type="number" pattern="\d*" inputmode="decimal" class="form-control col-5"
-                  placeholder="0" aria-label="kg-to-pound" aria-describedby="kg-to-pound">
-                <input type="button" class="shadow-sm btn btn-sm btn-primary" value="Convert"
-                  onclick="convertWeightUnit('kg-to-pound')" />
+                  placeholder="0" aria-label="kg-to-pound" aria-describedby="kg-to-pound"
+                  onkeyup="convertWeightUnit('kg-to-pound')">
+                <span class="shadow-sm input-group-text">:</span>
                 <input id="kg-to-pound-result" type="number" pattern="\d*" inputmode="decimal"
                   class="form-control col-5" placeholder="0" aria-label="kg-to-pound-result"
                   aria-describedby="kg-to-pound-result">
               </div>
 
-              <div class="input-group shadow-sm">
-                <span class="input-group-text">POUND-KG</span>
+              <div class="input-group input-group-sm shadow-sm">
+                <span class="input-group-text">POUND TO KG</span>
                 <input id="pound-to-kg" type="number" pattern="\d*" inputmode="decimal" class="form-control col-5"
-                  placeholder="0" aria-label="pound-to-kg" aria-describedby="pound-to-kg">
-                <input type="button" class="shadow-sm btn btn-sm btn-primary" value="Convert"
-                  onclick="convertWeightUnit('pound-to-kg')" />
+                  placeholder="0" aria-label="pound-to-kg" aria-describedby="pound-to-kg"
+                  onkeyup="convertWeightUnit('pound-to-kg')">
+                <span class="shadow-sm input-group-text">:</span>
                 <input id="pound-to-kg-result" type="number" pattern="\d*" inputmode="decimal"
                   class="form-control col-5" placeholder="0" aria-label="pound-to-kg-result"
                   aria-describedby="kpound-to-kg-result">
