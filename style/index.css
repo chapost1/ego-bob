@@ -18,17 +18,18 @@ body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
-@media only screen and (min-width: 577px) {
-  input[type="radio"], input[type="checkbox"] {
-    cursor: pointer;
-  }
-  .clickable {
-    cursor: pointer;
+@media screen and (min-width: 640px) {
+  .clickable.clickable-darkening:hover {
+    filter: brightness(0.75);
   }
 }
 
-.clickable:hover {
-  filter: brightness(0.75);
+input[type="radio"], input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 .bg-light-blue {
