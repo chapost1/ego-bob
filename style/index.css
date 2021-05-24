@@ -160,6 +160,10 @@ body {
   transform: translateY(-50%) !important;
 }
 
+.toast:not(.showing):not(.show) {
+  display: none;
+}
+
 /*
 form-switch sizes
 */
