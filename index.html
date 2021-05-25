@@ -42,27 +42,27 @@
             <div class="accordion-body" id="units-calculator-section">
 
               <div class="input-group input-group-sm mb-3 shadow-sm">
-                <span class="input-group-text fs-md">KG / POUND</span>
-                <input id="kg-to-pound" type="number" pattern="\d*" inputmode="decimal"
-                  class="shadow-sm form-control col-5 fs-md" placeholder="0" aria-label="kg-to-pound"
-                  aria-describedby="kg-to-pound" onkeyup="convertWeightUnit('kg-to-pound')">
-                <input id="kg-to-pound-result" type="number" pattern="\d*" inputmode="decimal"
+                <span class="input-group-text fs-md">KG => LB</span>
+                <input id="kg-to-lb" type="number" pattern="\d*" inputmode="decimal"
+                  class="shadow-sm form-control col-5 fs-md" placeholder="0" aria-label="kg-to-lb"
+                  aria-describedby="kg-to-lb" onkeyup="convertWeightUnit('kg-to-lb')">
+                <input id="kg-to-lb-result" type="number" pattern="\d*" inputmode="decimal"
                   class="form-control shadow-sm col-5 fs-md" placeholder="0" readonly disabled
-                  aria-label="kg-to-pound-result" aria-describedby="kg-to-pound-result">
+                  aria-label="kg-to-lb-result" aria-describedby="kg-to-lb-result">
                 <span class="btn-primary shadow-sm input-group-text clickable fs-md"
-                  onclick="copyToClipboard('#kg-to-pound-result')"><i class="fas fa-copy"></i></span>
+                  onclick="copyToClipboard('#kg-to-lb-result')"><i class="fas fa-copy"></i></span>
               </div>
 
               <div class="input-group input-group-sm shadow-sm">
-                <span class="input-group-text fs-md">POUND / KG</span>
-                <input id="pound-to-kg" type="number" pattern="\d*" inputmode="decimal"
-                  class="shadow-sm form-control col-5 fs-md" placeholder="0" aria-label="pound-to-kg"
-                  aria-describedby="pound-to-kg" onkeyup="convertWeightUnit('pound-to-kg')">
-                <input id="pound-to-kg-result" type="number" pattern="\d*" inputmode="decimal"
+                <span class="input-group-text fs-md">LB => KG</span>
+                <input id="lb-to-kg" type="number" pattern="\d*" inputmode="decimal"
+                  class="shadow-sm form-control col-5 fs-md" placeholder="0" aria-label="lb-to-kg"
+                  aria-describedby="lb-to-kg" onkeyup="convertWeightUnit('lb-to-kg')">
+                <input id="lb-to-kg-result" type="number" pattern="\d*" inputmode="decimal"
                   class="shadow-sm form-control col-5 fs-md" placeholder="0" readonly disabled
-                  aria-label="pound-to-kg-result" aria-describedby="pound-to-kg-result">
+                  aria-label="lb-to-kg-result" aria-describedby="lb-to-kg-result">
                 <span class="btn-primary shadow-sm input-group-text clickable fs-md"
-                  onclick="copyToClipboard('#pound-to-kg-result')"><i class="fas fa-copy"></i></span>
+                  onclick="copyToClipboard('#lb-to-kg-result')"><i class="fas fa-copy"></i></span>
               </div>
 
             </div>
@@ -113,9 +113,9 @@
                         <div class="form-check form-check-inline col-3">
                           <input class="form-check-input" type="radio"
                             name="workout-wizard-panel-settings-view-unit-select"
-                            id="workout-wizard-panel-settings-view-unit-select-pound" value="POUND">
+                            id="workout-wizard-panel-settings-view-unit-select-lb" value="LB">
                           <label class="form-check-label"
-                            for="workout-wizard-panel-settings-view-unit-select-pound">POUND</label>
+                            for="workout-wizard-panel-settings-view-unit-select-lb">LB</label>
                         </div>
                       </div>
 
@@ -222,10 +222,10 @@
                   </li>
 
                   <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="workout-wizard-plates-settings-modal-pound-tab" data-bs-toggle="tab"
-                      data-bs-target="#workout-wizard-plates-settings-modal-pound-tab-content" type="button" role="tab"
-                      aria-controls="workout-wizard-plates-settings-modal-pound-tab-content"
-                      aria-selected="false">POUND</button>
+                    <button class="nav-link" id="workout-wizard-plates-settings-modal-lb-tab" data-bs-toggle="tab"
+                      data-bs-target="#workout-wizard-plates-settings-modal-lb-tab-content" type="button" role="tab"
+                      aria-controls="workout-wizard-plates-settings-modal-lb-tab-content"
+                      aria-selected="false">LB</button>
                   </li>
 
                 </ul>
@@ -234,8 +234,8 @@
                     role="tabpanel" aria-labelledby="workout-wizard-plates-settings-modal-kg-tab">
                   </div>
 
-                  <div class="tab-pane fade" id="workout-wizard-plates-settings-modal-pound-tab-content" role="tabpanel"
-                    aria-labelledby="workout-wizard-plates-settings-modal-pound-tab">
+                  <div class="tab-pane fade" id="workout-wizard-plates-settings-modal-lb-tab-content" role="tabpanel"
+                    aria-labelledby="workout-wizard-plates-settings-modal-lb-tab">
                   </div>
                 </div>
               </div>
