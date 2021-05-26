@@ -42,7 +42,7 @@
             <div class="accordion-body" id="units-convertor-section">
 
               <div class="input-group input-group-sm mb-3 shadow-sm">
-                <span class="input-group-text fs-md">KG / LB</span>
+                <span class="input-group-text shadow-sm fs-md">KG / LB</span>
                 <input id="kg-to-lb" type="number" pattern="\d*" inputmode="decimal"
                   class="shadow-sm form-control col-5 fs-md" placeholder="0" aria-label="kg-to-lb"
                   aria-describedby="kg-to-lb" onkeyup="convertWeightUnit('kg-to-lb')">
@@ -54,7 +54,7 @@
               </div>
 
               <div class="input-group input-group-sm shadow-sm">
-                <span class="input-group-text fs-md">LB / KG</span>
+                <span class="input-group-text shadow-sm fs-md">LB / KG</span>
                 <input id="lb-to-kg" type="number" pattern="\d*" inputmode="decimal"
                   class="shadow-sm form-control col-5 fs-md" placeholder="0" aria-label="lb-to-kg"
                   aria-describedby="lb-to-kg" onkeyup="convertWeightUnit('lb-to-kg')">
@@ -96,14 +96,29 @@
                   <div class="collapse mb-3" id="workout-wizard-panel-settings">
                     <div class="card card-body">
 
-                      <div class="row form-floating px-2 py-1">
-                        <select class="shadow-sm form-select clickable"
-                          id="workout-wizard-panel-settings-barbell-select"></select>
-                        <label for="workout-wizard-panel-settings-barbell-select">Selected Barbell Weight (KG)</label>
+                      <div class="row px-2 py-1">
+                        <div class="col-8 px-0">
+                          <label class="form-group has-float-label">
+                            <select class="form-select has-float-label shadow-sm clickable"
+                              id="workout-wizard-panel-settings-barbell-select">
+                            </select>
+                            <span class="text-secondary fw-bolder">Selected Barbell Weight</span>
+                          </label>
+                        </div>
+
+                        <div class="col-4 px-0">
+                          <label class="form-group has-float-label shadow-sm clickable">
+                            <select class="form-select has-float-label"
+                              id="workout-wizard-panel-settings-barbell-select-unit">
+                            </select>
+                            <span class="text-secondary fw-bolder">Unit</span>
+                          </label>
+                        </div>
+
                       </div>
 
                       <div class="row px-2 py-1">
-                        <label class="px-0">Choose View Unit:</label>
+                        <label class="px-0">Target Weight Unit:</label>
                         <div class="form-check form-check-inline col-3">
                           <input class="form-check-input" type="radio"
                             name="workout-wizard-panel-settings-view-unit-select"
@@ -159,6 +174,15 @@
                         Combinations</div>
                     </div>
 
+                  </div>
+
+                  <div class="d-flex justify-content-center">
+                    <button class="btn btn-sm btn-light clickable clickable-darkening d-none"
+                      id="ww-plate-load-options-show-less-btn" data-bs-toggle="collapse"
+                      data-bs-target="#panelsStayOpen-collapseTwo">
+                      <span class="fs-sm">Show Less</span>
+                      <i class="fas fa-chevron-up"></i>
+                    </button>
                   </div>
 
                 </div>
@@ -243,6 +267,63 @@
             </div>
           </div>
         </div>
+
+
+
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseThree">
+              One Rep Max Calculator
+            </button>
+          </h2>
+          <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-headingThree">
+            <div class="accordion-body" id="rm1-calculator-section">
+              <div class="row flex-row">
+                <h5>Based On Your Last Set</h5>
+              </div>
+
+              <div class="input-group input-group-sm shadow-sm mb-3">
+                <span class="input-group-text shadow-sm fs-md">Weight</span>
+                <input id="rm1-last-weight" type="number" pattern="\d*" inputmode="decimal"
+                  class="shadow-sm form-control col-5 fs-md" placeholder="0" aria-label="rm1-last-weight"
+                  aria-describedby="rm1-last-weight">
+              </div>
+
+              <div class="px-0 mb-3">
+                <label class="form-group has-float-label">
+                  <select class="form-select has-float-label shadow-sm clickable" id="rm1-last-reps">
+                  </select>
+                  <span class="text-secondary fw-bolder">Reps</span>
+                </label>
+              </div>
+
+              <div class="px-0 mb-3">
+                <label class="form-group has-float-label">
+                  <select class="form-select has-float-label shadow-sm clickable" id="rm1-last-rpe">
+                  </select>
+                  <span class="text-secondary fw-bolder">@RPE</span>
+                </label>
+              </div>
+
+              <div class="d-flex justify-content-center">
+                <button type="button" class="col-12 btn shadow-sm btn-primary position-relative"
+                  onclick="calcAndDisplayRM1Result()">
+                  Calc
+                </button>
+              </div>
+
+              <div id="rm1-calc-result" class="row h6 d-none mt-3 mb-0"></div>
+
+            </div>
+          </div>
+        </div>
+
+
+
 
       </div>
     </div>
