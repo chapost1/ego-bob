@@ -244,8 +244,8 @@ form-switch sizes
   opacity: 1;
   -webkit-transition: all .2s;
   transition: all .2s;
-  top: .5rem;
-  left: .65rem;
+  top: .375rem;
+  left: .5rem;
   z-index: 3;
   line-height: 1;
   padding: 0 1px;
@@ -253,8 +253,9 @@ form-switch sizes
 
 .form-select.has-float-label {
   padding: unset;
-  height: 3rem;
-  padding-left: .65rem;
+  height: 2.625rem;
+  padding-left: .5rem;
   padding-top: 1rem;
   background-position: right .375rem center;
+  font-weight: 500;
 }
